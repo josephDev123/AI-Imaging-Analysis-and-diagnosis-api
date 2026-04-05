@@ -16,7 +16,7 @@ export class MedImagingController {
 
       res.status(200).json({ msg: "diagnosis successful", data: result });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 

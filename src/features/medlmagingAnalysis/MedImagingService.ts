@@ -5,6 +5,7 @@ import { prompt } from "./prompt.js";
 import { MedicalImagingReportSchema } from "./schema/responseFormat.js";
 import { type ChatOpenAI, type ChatOpenAICallOptions } from "@langchain/openai";
 import crypto from "node:crypto";
+import { medicalWaveformGuard } from "./langchain_middlewares/CustomIsMedicalImaging.js";
 
 export class MedImagingService {
   constructor(private readonly model: ChatOpenAI<ChatOpenAICallOptions>) {}
@@ -23,6 +24,7 @@ export class MedImagingService {
     try {
       const agent = createAgent({
         tools: [getMedicalReferenceCitationLink],
+        middleware: [medicalWaveformGuard],
         model: this.model,
         checkpointer: new MemorySaver(),
         systemPrompt: prompt,
@@ -52,7 +54,7 @@ export class MedImagingService {
         },
       );
 
-      console.log("message", result.messages);
+      // console.log("message", result.messages);
 
       return result.structuredResponse;
     } catch (error) {

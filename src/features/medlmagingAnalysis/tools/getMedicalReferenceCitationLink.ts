@@ -4,7 +4,7 @@ import z from "zod";
 type RunTimeConfig = ToolRuntime<unknown, { email: string }>;
 
 export const getMedicalReferenceCitationLink = tool(
-  async (input: { diagnosis: string }) => {
+  async (input: { diagnosis: string }, _: RunTimeConfig) => {
     const query = encodeURIComponent(input.diagnosis);
 
     const res = await fetch(

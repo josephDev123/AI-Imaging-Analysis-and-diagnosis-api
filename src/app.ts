@@ -1,7 +1,7 @@
 import express from "express";
 import type { IConfig } from "./config.js";
-import { HealthRouter } from "./health/routes.js";
-import { MedImagingRouter } from "./medlmagingAnalysis/routes.js";
+import { HealthRouter } from "./features/health/routes.js";
+import { MedImagingRouter } from "./features/medlmagingAnalysis/routes.js";
 import cors from "cors";
 
 export async function App(config: IConfig) {

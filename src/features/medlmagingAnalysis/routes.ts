@@ -1,9 +1,9 @@
 import { Router } from "express";
-import type { IConfig } from "../config.js";
+import type { IConfig } from "../../config.js";
 import { MedImagingController } from "./MedImagingController.js";
 import multer from "multer";
 import { MedImagingService } from "./MedImagingService.js";
-import { model } from "../lib/models/ChatGpt.js";
+import { model } from "../../lib/models/ChatGpt.js";
 
 export function MedImagingRouter(config: IConfig) {
   const router = Router();

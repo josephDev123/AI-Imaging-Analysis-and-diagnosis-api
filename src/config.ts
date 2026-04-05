@@ -10,6 +10,7 @@ export const configSchema = z.object({
     pretty: z.coerce.boolean().default(false),
   }),
   OPENAI_API_KEY: z.string().min(5),
+  REDIS_URL: z.string().min(5),
 });
 
 export type IConfig = z.infer<typeof configSchema>;
@@ -26,6 +27,7 @@ export function loadConfig() {
       pretty: process.env.LOG_PRETTY === "true",
     },
     OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
+    REDIS_URL: process.env.REDIS_URL!,
   };
 
   const config = configSchema.parse(envConfig);
