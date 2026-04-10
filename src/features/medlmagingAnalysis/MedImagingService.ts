@@ -6,6 +6,7 @@ import { MedicalImagingReportSchema } from "./schema/responseFormat.js";
 import { type ChatOpenAI, type ChatOpenAICallOptions } from "@langchain/openai";
 import crypto from "node:crypto";
 import { medicalWaveformGuard } from "./langchain_middlewares/CustomIsMedicalImaging.js";
+import { GlobalErrorHandler } from "../../lib/shared/GlobalErrorHandler.js";
 
 export class MedImagingService {
   constructor(private readonly model: ChatOpenAI<ChatOpenAICallOptions>) {}
@@ -58,7 +59,20 @@ export class MedImagingService {
 
       return result.structuredResponse;
     } catch (error) {
-      throw error;
+      if (error instanceof GlobalErrorHandler) {
+        throw error;
+      }
+
+      if (error instanceof Error) {
+        throw new GlobalErrorHandler(error.name, error.message, 500, false);
+      }
+
+      throw new GlobalErrorHandler(
+        "Unknown",
+        "Something went wrong",
+        500,
+        false,
+      );
     }
   }
 }

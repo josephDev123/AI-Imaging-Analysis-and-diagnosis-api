@@ -10,12 +10,13 @@ const ImageValidationSchema = z.object({
   isValidWaveform: z
     .boolean()
     .describe(
-      "True ONLY if this is a clear medical diagnostic waveform (ECG/EKG tracing, EEG, etc.) showing squiggly lines/waves on a grid with labels like Lead I, II, V1-V6, time/voltage scales. False for photos, X-rays, MRIs, text, memes, etc.",
+      "True ONLY if this is a clear medical diagnostic imaging (ECG/EKG tracing, EEG, X-rays, MRIs, etc.) showing squiggly lines/waves on a grid with labels like Lead I, II, V1-V6, time/voltage scales. False for photos,  text, memes, etc.",
     ),
   detectedType: z.enum([
     "ECG",
     "EEG",
     "other_waveform",
+    "medical_imaging",
     "non_medical",
     "other_medical",
   ]),
@@ -46,7 +47,6 @@ type ImageValidation = z.infer<typeof ImageValidationSchema>;
 
 export const medicalWaveformGuard = createMiddleware({
   name: "MedicalWaveformGuard",
-
   beforeAgent: {
     canJumpTo: ["end"],
 
@@ -82,7 +82,7 @@ export const medicalWaveformGuard = createMiddleware({
 
         const validation = await model.withStructuredOutput(parser).invoke([
           new SystemMessage(
-            `You are a strict gatekeeper. Only allow ECG/EKG waveform graphs. Reject everything else.`,
+            `You are a strict gatekeeper. Only allow ECG/EKG waveform graphs, X-rays, MRIs, medical imaging  that are not text-based heavy etc. Reject everything else.`,
           ),
           new HumanMessage({
             content: [

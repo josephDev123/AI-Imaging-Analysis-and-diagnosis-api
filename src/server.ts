@@ -19,10 +19,11 @@ import { createLogger } from "./logger.js";
     logger.info("Logger initialized");
   } catch (error) {
     console.log("Error initializing logger:", error);
+    return;
   }
 
   try {
-    const app = await App(config);
+    const app = await App(config, logger!);
     app.listen(config.port, () => {
       logger.info({ port: config.port }, `Server is running on ${config.port}`);
     });

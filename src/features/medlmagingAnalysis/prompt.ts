@@ -142,7 +142,7 @@ After calling the tool, you MUST include the returned reference URLs
 inside the "references" field of the corresponding rankedDiagnoses item.
 
 
-If the input is not a valid medical waveform image,
+If the input is not a valid medical waveform/imaging image,
 you MUST still return a complete JSON object matching the schema,
 with empty arrays and a clear explanation in detailedDescription and patientExplanation.
 
