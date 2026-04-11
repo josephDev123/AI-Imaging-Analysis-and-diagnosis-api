@@ -1,4 +1,4 @@
-import { Queue } from "bullmq";
-const connectionString = "";
+// import { Queue } from "bullmq";
+// const connectionString = "";
 
-export const BullQueue = new Queue("mail");
+// export const BullQueue = new Queue("mail");

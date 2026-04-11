@@ -23,28 +23,6 @@ const ImageValidationSchema = z.object({
   reason: z.string().describe("One-sentence explanation."),
 });
 
-type ImageValidation = z.infer<typeof ImageValidationSchema>;
-
-// Helper: Convert Buffer to message content with image
-// function createImageMessage(
-//   imageBuffer: Buffer,
-//   mimeType: string = "image/jpeg",
-// ): HumanMessage {
-//   const base64 = imageBuffer.toString("base64");
-//   return new HumanMessage({
-//     content: [
-//       {
-//         type: "text",
-//         text: "Is this a valid medical waveform diagnostic image?",
-//       },
-//       {
-//         type: "image_url",
-//         image_url: { url: `data:${mimeType};base64,${base64}` },
-//       },
-//     ],
-//   });
-// }
-
 export const medicalWaveformGuard = createMiddleware({
   name: "MedicalWaveformGuard",
   beforeAgent: {
@@ -65,56 +43,52 @@ export const medicalWaveformGuard = createMiddleware({
 
       if (!imagePart) {
         return {
-          //   messages: [
-          //     new AIMessage(
-          //       "❌ No image found. Please upload a medical waveform image.",
-          //     ),
-          //   ],
           structuredResponse: REJECTED_RESPONSE,
           jumpTo: "end",
         };
       }
 
       try {
-        const parser = StructuredOutputParser.fromZodSchema(
-          ImageValidationSchema,
-        );
-
-        const validation = await model.withStructuredOutput(parser).invoke([
-          new SystemMessage(
-            `You are a strict gatekeeper. Only allow ECG/EKG waveform graphs, X-rays, MRIs, medical imaging  that are not text-based heavy etc. Reject everything else.`,
-          ),
-          new HumanMessage({
-            content: [
-              { type: "text", text: "Validate this image." },
-              imagePart,
-            ],
-          }),
-        ]);
-
+        const validation = await model
+          // .withStructuredOutput(parser)
+          .withStructuredOutput(ImageValidationSchema)
+          .invoke([
+            new SystemMessage(
+              `
+  "You are an image classifier. Determine if this image appears to be a medical imaging (like ECG, X-ray, MRI, or waveform-like data) or not. Do not provide medical advice."          
+            // "Allow any medical imaging including ECG, X-ray, MRI, or waveform-like data. Only reject clearly non-medical images like memes or selfies."
+            `,
+            ),
+            new HumanMessage({
+              content: [
+                { type: "text", text: "Validate this image." },
+                imagePart,
+              ],
+            }),
+          ]);
+        console.log("Validation result:", validation);
         if (!validation.isValidWaveform) {
           return {
-            // messages: [
-            //   new AIMessage(
-            //     `❌ Only ECG/EEG waveform images are allowed.\n\nReason: ${validation.reason}`,
-            //   ),
-            // ],
             structuredResponse: REJECTED_RESPONSE,
             jumpTo: "end",
           };
         }
 
+        console.log("result", validation);
+
         // ✅ allow flow to continue
         return state;
       } catch (error) {
-        console.error("Validation error:", error);
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          "code" in error &&
+          (error as any).code === "content_filter"
+        ) {
+          return state;
+        }
 
         return {
-          //   messages: [
-          //     new AIMessage(
-          //       "❌ Image validation failed. Please upload a valid waveform.",
-          //     ),
-          //   ],
           structuredResponse: REJECTED_RESPONSE,
           jumpTo: "end",
         };
