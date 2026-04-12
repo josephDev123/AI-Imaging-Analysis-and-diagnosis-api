@@ -7,9 +7,13 @@ import { type ChatOpenAI, type ChatOpenAICallOptions } from "@langchain/openai";
 import crypto from "node:crypto";
 import { medicalWaveformGuard } from "./langchain_middlewares/CustomIsMedicalImaging.js";
 import { GlobalErrorHandler } from "../../lib/shared/GlobalErrorHandler.js";
+import type { Queue } from "bullmq";
 
 export class MedImagingService {
-  constructor(private readonly model: ChatOpenAI<ChatOpenAICallOptions>) {}
+  constructor(
+    private readonly model: ChatOpenAI<ChatOpenAICallOptions>,
+    private readonly MailQueue: Queue,
+  ) {}
 
   async create(upload: Express.Multer.File) {
     const threadId = crypto.randomUUID();
@@ -56,6 +60,7 @@ export class MedImagingService {
       );
 
       // console.log("message", result.messages);
+      await this.MailQueue.add("mail", result.structuredResponse);
 
       return result.structuredResponse;
     } catch (error) {

@@ -6,8 +6,9 @@ import cors from "cors";
 import { GlobalErrorMiddleware } from "./middlewares/GlobalErrorMiddleware.js";
 import type { Logger } from "pino";
 import { ratelimiter } from "./lib/rateLimiter.js";
+import type { Queue } from "bullmq";
 
-export async function App(config: IConfig, logger: Logger) {
+export async function App(config: IConfig, logger: Logger, Queue: Queue) {
   let windowMs = 5 * 60 * 1000;
   const app = express();
   app.use(express.json());
@@ -23,7 +24,7 @@ export async function App(config: IConfig, logger: Logger) {
       standardHeaders: "draft-8",
       legacyHeaders: true,
     }),
-    MedImagingRouter(config),
+    MedImagingRouter(config, Queue),
   );
   return app;
 }

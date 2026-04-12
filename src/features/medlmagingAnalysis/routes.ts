@@ -4,11 +4,12 @@ import { MedImagingController } from "./MedImagingController.js";
 import multer from "multer";
 import { MedImagingService } from "./MedImagingService.js";
 import { model } from "../../lib/models/ChatGpt.js";
+import type { Queue } from "bullmq";
 
-export function MedImagingRouter(config: IConfig) {
+export function MedImagingRouter(config: IConfig, Queue: Queue) {
   const router = Router();
   const llm = model;
-  const service = new MedImagingService(llm);
+  const service = new MedImagingService(llm, Queue);
   const controller = new MedImagingController(service);
   const storage = multer.memoryStorage();
   const upload = multer({
