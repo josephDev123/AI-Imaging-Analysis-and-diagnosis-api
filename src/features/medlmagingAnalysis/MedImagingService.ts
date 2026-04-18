@@ -60,7 +60,7 @@ export class MedImagingService {
       );
 
       // console.log("message", result.messages);
-      await this.MailQueue.add("mail", result.structuredResponse);
+      await this.MailQueue.add("medicalResult", result.structuredResponse);
 
       return result.structuredResponse;
     } catch (error) {
