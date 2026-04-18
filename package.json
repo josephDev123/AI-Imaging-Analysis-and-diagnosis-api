@@ -7,8 +7,8 @@
     "dev": "tsx watch src/server.ts",
     "dev:worker": "tsx watch ./src/lib/workers/sendMedicalDiagnosticWorker.ts",
     "build": "tsc",
-    "start": "node dist/src/app.js",
-    "start:worker": "node dist/src/lib/workers/sendMedicalDiagnosticWorker.js"
+    "start": "node dist/app.js",
+    "start:worker": "node dist/lib/workers/sendMedicalDiagnosticWorker.js"
   },
   "author": "Joseph Uzuegbu",
   "license": "ISC",
