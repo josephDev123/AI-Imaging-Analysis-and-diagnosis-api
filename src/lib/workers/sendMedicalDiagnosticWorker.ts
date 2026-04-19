@@ -16,6 +16,10 @@ const worker = new Worker(
   },
 );
 
+worker.on("ready", () => {
+  console.log("Worker is ready");
+});
+
 worker.on("completed", (job) => {
   console.log(`Job completed: ${job.id}`);
 });
