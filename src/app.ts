@@ -8,7 +8,8 @@ import type { Logger } from "pino";
 import { ratelimiter } from "./lib/rateLimiter.js";
 import type { Queue } from "bullmq";
 
-export async function App(config: IConfig, logger: Logger, Queue: Queue) {
+// Queue: Queue
+export async function App(config: IConfig, logger: Logger) {
   let windowMs = 5 * 60 * 1000;
   const app = express();
   app.use(express.json());
@@ -24,7 +25,7 @@ export async function App(config: IConfig, logger: Logger, Queue: Queue) {
       standardHeaders: "draft-8",
       legacyHeaders: true,
     }),
-    MedImagingRouter(config, Queue),
+    MedImagingRouter(config),
   );
   return app;
 }

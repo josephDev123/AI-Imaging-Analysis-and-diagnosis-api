@@ -2,8 +2,8 @@ import type { Logger } from "pino";
 import { App } from "./app.js";
 import { loadConfig } from "./config.js";
 import { createLogger } from "./logger.js";
-import { QueueConnect } from "./lib/Queue.js";
-import type { Queue } from "bullmq";
+// import { QueueConnect } from "./lib/Queue.js";
+// import type { Queue } from "bullmq";
 
 (async function startServer() {
   let config;
@@ -24,24 +24,25 @@ import type { Queue } from "bullmq";
     return;
   }
 
-  let Queue: Queue;
+  // let Queue: Queue;
+
+  // try {
+  //   Queue = await QueueConnect(
+  //     config.REDIS_HOST,
+  //     config.REDIS_PORT,
+  //     config.REDIS_PASSWORD,
+  //   );
+  // } catch (error) {
+  //   if (logger) {
+  //     logger.error(error);
+  //   }
+  //   console.log(error);
+  //   return;
+  // }
 
   try {
-    Queue = await QueueConnect(
-      config.REDIS_HOST,
-      config.REDIS_PORT,
-      config.REDIS_PASSWORD,
-    );
-  } catch (error) {
-    if (logger) {
-      logger.error(error);
-    }
-    console.log(error);
-    return;
-  }
-
-  try {
-    const app = await App(config, logger!, Queue);
+    // Queue
+    const app = await App(config, logger!);
     app.listen(config.port, () => {
       logger.info({ port: config.port }, `Server is running on ${config.port}`);
     });

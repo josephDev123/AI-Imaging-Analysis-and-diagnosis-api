@@ -12,7 +12,7 @@ import type { Queue } from "bullmq";
 export class MedImagingService {
   constructor(
     private readonly model: ChatOpenAI<ChatOpenAICallOptions>,
-    private readonly MailQueue: Queue,
+    // private readonly MailQueue: Queue,
   ) {}
 
   async create(upload: Express.Multer.File) {
@@ -60,7 +60,7 @@ export class MedImagingService {
       );
 
       // console.log("message", result.messages);
-      await this.MailQueue.add("medicalResult", result.structuredResponse);
+      // await this.MailQueue.add("medicalResult", result.structuredResponse);
 
       return result.structuredResponse;
     } catch (error) {
