@@ -1,17 +1,20 @@
-import { createAgent } from "langchain";
+import { createAgent, HumanMessage } from "langchain";
 import { MemorySaver } from "@langchain/langgraph";
 import { getMedicalReferenceCitationLink } from "./tools/getMedicalReferenceCitationLink.js";
 import { prompt } from "./prompt.js";
 import { MedicalImagingReportSchema } from "./schema/responseFormat.js";
-import { type ChatOpenAI, type ChatOpenAICallOptions } from "@langchain/openai";
+// import { type ChatOpenAI, type ChatOpenAICallOptions } from "@langchain/openai";
 import crypto from "node:crypto";
 import { medicalWaveformGuard } from "./langchain_middlewares/CustomIsMedicalImaging.js";
 import { GlobalErrorHandler } from "../../lib/shared/GlobalErrorHandler.js";
-import type { Queue } from "bullmq";
+// import type { Queue } from "bullmq";
+import { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import { ConfigurableModel } from "langchain/chat_models/universal";
 
 export class MedImagingService {
   constructor(
-    private readonly model: ChatOpenAI<ChatOpenAICallOptions>,
+    // private readonly model: ChatOpenAI<ChatOpenAICallOptions>,
+    private readonly model: ConfigurableModel,
     // private readonly MailQueue: Queue,
   ) {}
 
@@ -26,6 +29,7 @@ export class MedImagingService {
 
     const ext = upload.mimetype.split("/")[1];
     const imageDataUri = `data:image/${ext};base64,${imageBase64}`;
+    // console.log("imageDataUri", imageDataUri);
     try {
       const agent = createAgent({
         tools: [getMedicalReferenceCitationLink],
@@ -59,7 +63,7 @@ export class MedImagingService {
         },
       );
 
-      // console.log("message", result.messages);
+      // console.log("result", result);
       // await this.MailQueue.add("medicalResult", result.structuredResponse);
 
       return result.structuredResponse;

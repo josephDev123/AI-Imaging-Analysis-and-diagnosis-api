@@ -2,6 +2,7 @@ import type { Logger } from "pino";
 import { App } from "./app.js";
 import { loadConfig } from "./config.js";
 import { createLogger } from "./logger.js";
+
 // import { QueueConnect } from "./lib/Queue.js";
 // import type { Queue } from "bullmq";
 

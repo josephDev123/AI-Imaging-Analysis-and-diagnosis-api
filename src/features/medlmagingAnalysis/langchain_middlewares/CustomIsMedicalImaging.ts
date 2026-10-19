@@ -48,9 +48,10 @@ export const medicalWaveformGuard = createMiddleware({
         };
       }
 
+      // console.log("imagePart", imagePart);
+
       try {
         const validation = await model
-          // .withStructuredOutput(parser)
           .withStructuredOutput(ImageValidationSchema)
           .invoke([
             new SystemMessage(
@@ -62,7 +63,11 @@ export const medicalWaveformGuard = createMiddleware({
             new HumanMessage({
               content: [
                 { type: "text", text: "Validate this image." },
-                imagePart,
+                {
+                  type: "image_url",
+                  image_url: { url: imagePart.image_url.url },
+                },
+                // imagePart,
               ],
             }),
           ]);

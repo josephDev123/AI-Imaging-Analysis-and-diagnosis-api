@@ -25,6 +25,7 @@ export class MedImagingController {
 
       res.status(200).json({ msg: "diagnosis successful", data: result });
     } catch (error) {
+      console.log(error);
       if (error instanceof GlobalErrorHandler) {
         next(
           new GlobalErrorHandler(
